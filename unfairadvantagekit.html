@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Free Home Buyer's Kit — Misty Sumner</title>
+<style>
+:root {
+  --navy: #1B2A4A; --navy-l: #243560; --navy-d: #111D33;
+  --gold: #C9A84C; --gold-l: #E8C97A;
+  --white: #FFFFFF; --off: #F7F4EF; --light: #E0DDD7;
+  --gray: #888; --dgray: #3A3733; --green: #2D6A4F;
+}
+
+body { background: var(--navy-d); min-height: 100vh; }
+
+.page-wrap {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 100px 20px 60px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* background grid texture */
+.page-wrap::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(201,168,76,0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(201,168,76,0.04) 1px, transparent 1px);
+  background-size: 60px 60px;
+}
+
+.page-wrap::after {
+  content: '';
+  position: absolute;
+  top: -100px; right: -100px;
+  width: 500px; height: 500px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(201,168,76,0.07) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.card {
+  position: relative;
+  z-index: 1;
+  background: var(--off);
+  border-radius: 6px;
+  max-width: 520px;
+  width: 100%;
+  overflow: hidden;
+  box-shadow: 0 40px 80px rgba(0,0,0,0.4);
+}
+
+.gold-bar { height: 5px; background: linear-gradient(90deg, var(--gold), var(--gold-l)); }
+
+.card-header {
+  background: var(--navy);
+  padding: 36px 40px 32px;
+  position: relative;
+  overflow: hidden;
+}
+.card-header::before {
+  content: '';
+  position: absolute;
+  bottom: -40px; right: -40px;
+  width: 160px; height: 160px;
+  border-radius: 50%;
+  background: rgba(201,168,76,0.06);
+}
+
+.eyebrow {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.eyebrow::before {
+  content: '';
+  width: 24px; height: 1px;
+  background: var(--gold);
+  flex-shrink: 0;
+}
+
+.card-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 32px;
+  font-weight: 300;
+  color: var(--white);
+  line-height: 1.2;
+  margin-bottom: 10px;
+}
+.card-title em { font-style: italic; color: var(--gold); }
+
+.card-sub {
+  font-size: 13px;
+  color: rgba(255,255,255,0.6);
+  line-height: 1.7;
+}
+
+/* KIT PREVIEW */
+.kit-preview {
+  padding: 24px 40px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.bonus-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 0;
+  border-bottom: 1px solid var(--light);
+  font-size: 13px;
+  color: var(--dgray);
+}
+.bonus-row:last-child { border-bottom: none; }
+.bonus-check {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  background: rgba(45,106,79,0.12);
+  border: 1.5px solid var(--green);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  color: var(--green);
+  font-size: 10px;
+}
+.bonus-name { flex: 1; font-weight: 500; }
+.bonus-val { font-size: 11px; color: var(--gray); }
+
+/* FORM */
+.form-section { padding: 28px 40px 36px; }
+
+.form-label {
+  display: block;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  color: var(--navy);
+  margin-bottom: 6px;
+}
+
+.form-input {
+  width: 100%;
+  background: var(--white);
+  border: 2px solid var(--light);
+  border-radius: 4px;
+  padding: 13px 16px;
+  font-size: 15px;
+  font-family: 'Jost', sans-serif;
+  color: var(--navy);
+  outline: none;
+  transition: border 0.2s;
+  margin-bottom: 16px;
+  -webkit-appearance: none;
+}
+.form-input:focus { border-color: var(--gold); }
+.form-input::placeholder { color: #bbb; }
+
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.form-row .form-input { margin-bottom: 0; }
+.form-row .form-group { margin-bottom: 16px; }
+
+.submit-btn {
+  width: 100%;
+  background: var(--gold);
+  color: var(--navy);
+  border: none;
+  border-radius: 4px;
+  padding: 17px;
+  font-size: 13px;
+  font-weight: 700;
+  font-family: 'Jost', sans-serif;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all 0.2s;
+  margin-top: 4px;
+}
+.submit-btn:hover { background: var(--gold-l); transform: translateY(-1px); box-shadow: 0 6px 20px rgba(201,168,76,0.3); }
+.submit-btn:active { transform: translateY(0); }
+
+.legal {
+  font-size: 10px;
+  color: var(--gray);
+  text-align: center;
+  margin-top: 12px;
+  line-height: 1.6;
+}
+
+/* SUCCESS STATE */
+.success-screen {
+  display: none;
+  padding: 48px 40px;
+  text-align: center;
+}
+.success-screen.visible { display: block; }
+.form-section.hidden { display: none; }
+.kit-preview.hidden { display: none; }
+
+.success-icon {
+  width: 64px; height: 64px;
+  border-radius: 50%;
+  background: rgba(45,106,79,0.12);
+  border: 2px solid var(--green);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+  font-size: 24px;
+}
+.success-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--navy);
+  margin-bottom: 10px;
+}
+.success-sub {
+  font-size: 13px;
+  color: var(--gray);
+  line-height: 1.7;
+  margin-bottom: 28px;
+}
+.success-links {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.kit-link {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  background: var(--white);
+  border: 1.5px solid var(--light);
+  border-radius: 4px;
+  text-decoration: none;
+  color: var(--navy);
+  font-size: 13px;
+  font-weight: 600;
+  transition: all 0.2s;
+  border-left: 4px solid var(--gold);
+}
+.kit-link:hover { border-left-color: var(--navy); background: var(--off); }
+.kit-link span { font-size: 16px; }
+
+.call-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 24px;
+  padding: 14px;
+  background: var(--navy);
+  color: var(--white);
+  border-radius: 4px;
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+@media (max-width: 560px) {
+  .card-header, .kit-preview, .form-section { padding-left: 24px; padding-right: 24px; }
+  .success-screen { padding: 36px 24px; }
+  .form-row { grid-template-columns: 1fr; }
+  .form-row .form-group { margin-bottom: 0; }
+  .form-row .form-input { margin-bottom: 16px; }
+}
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300&family=Jost:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+<!-- components.js injects the shared nav and footer -->
+<script src="components.js"></script>
+
+<div class="page-wrap">
+  <div class="card">
+    <div class="gold-bar"></div>
+
+    <div class="card-header">
+      <div class="eyebrow">Home Buyer's Unfair Advantage Kit</div>
+      <h1 class="card-title">5 Free Tools.<br><em>Instant Access.</em></h1>
+      <p class="card-sub">Tell us where to send your kit and get instant access to all 5 professional buyer tools — completely free.</p>
+    </div>
+
+    <!-- BONUS PREVIEW -->
+    <div class="kit-preview" id="kitPreview">
+      <div class="bonus-row">
+        <div class="bonus-check">✓</div>
+        <div class="bonus-name">The Ready Buyer Blueprint</div>
+        <div class="bonus-val">$97 value</div>
+      </div>
+      <div class="bonus-row">
+        <div class="bonus-check">✓</div>
+        <div class="bonus-name">The Neighborhood Research Toolkit</div>
+        <div class="bonus-val">$97 value</div>
+      </div>
+      <div class="bonus-row">
+        <div class="bonus-check">✓</div>
+        <div class="bonus-name">The Home Scorecard System</div>
+        <div class="bonus-val">$97 value</div>
+      </div>
+      <div class="bonus-row">
+        <div class="bonus-check">✓</div>
+        <div class="bonus-name">The Complete Buyer's Guide</div>
+        <div class="bonus-val">$97 value</div>
+      </div>
+      <div class="bonus-row">
+        <div class="bonus-check">✓</div>
+        <div class="bonus-name">The Wait vs. Buy Calculator</div>
+        <div class="bonus-val">$97 value</div>
+      </div>
+    </div>
+
+    <!-- FORM -->
+    <div class="form-section" id="formSection">
+      <form id="kitForm" action="https://formspree.io/f/xdayybll" method="POST">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">First Name</label>
+            <input type="text" name="first_name" class="form-input" placeholder="Jane" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Last Name</label>
+            <input type="text" name="last_name" class="form-input" placeholder="Smith" required>
+          </div>
+        </div>
+        <label class="form-label">Email Address</label>
+        <input type="email" name="email" class="form-input" placeholder="jane@email.com" required>
+        <label class="form-label">Phone Number</label>
+        <input type="tel" name="phone" class="form-input" placeholder="(702) 555-0100">
+        <!-- Hidden fields for Misty's tracking -->
+        <input type="hidden" name="source" value="Unfair Advantage Kit Page">
+        <input type="hidden" name="_subject" value="New Kit Request — Home Buyer's Unfair Advantage Kit">
+        <button type="submit" class="submit-btn">
+          <span>Send Me the Free Kit</span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </button>
+      </form>
+      <div class="legal">
+        By submitting you agree to be contacted by Misty Sumner, REALTOR® · Lic. S.0192497 · Roland Team / LPT Realty.<br>
+        We never sell or share your information.
+      </div>
+    </div>
+
+    <!-- SUCCESS -->
+    <div class="success-screen" id="successScreen">
+      <div class="success-icon">🏡</div>
+      <div class="success-title">Your Kit Is Ready.</div>
+      <div class="success-sub">Check your email for a personal note from Misty with all 5 links. In the meantime, tap any bonus below to start right now.</div>
+      <div class="success-links">
+        <a href="https://thereadybuyerblueprint.netlify.app/" target="_blank" class="kit-link">
+          The Ready Buyer Blueprint <span>→</span>
+        </a>
+        <a href="https://neighborhoodresearchtool.netlify.app/" target="_blank" class="kit-link">
+          The Neighborhood Research Toolkit <span>→</span>
+        </a>
+        <a href="https://homescorecardsystem.netlify.app/" target="_blank" class="kit-link">
+          The Home Scorecard System <span>→</span>
+        </a>
+        <a href="https://mlsbuyersguide.netlify.app/" target="_blank" class="kit-link">
+          The Complete Buyer's Guide <span>→</span>
+        </a>
+        <a href="https://waitvsbuycalculator.netlify.app/" target="_blank" class="kit-link">
+          The Wait vs. Buy Calculator <span>→</span>
+        </a>
+      </div>
+      <a href="tel:7023766297" class="call-cta">
+        📞 Questions? Call or Text Misty · (702) 376-6297
+      </a>
+    </div>
+
+  </div>
+</div>
+
+<script>
+document.getElementById('kitForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+  const form = e.target;
+  const btn = form.querySelector('.submit-btn');
+  btn.textContent = 'Sending...';
+  btn.disabled = true;
+
+  try {
+    const res = await fetch(form.action, {
+      method: 'POST',
+      body: new FormData(form),
+      headers: { 'Accept': 'application/json' }
+    });
+    if (res.ok) {
+      document.getElementById('kitPreview').classList.add('hidden');
+      document.getElementById('formSection').classList.add('hidden');
+      document.getElementById('successScreen').classList.add('visible');
+    } else {
+      btn.textContent = 'Something went wrong — try again';
+      btn.disabled = false;
+    }
+  } catch {
+    btn.textContent = 'Something went wrong — try again';
+    btn.disabled = false;
+  }
+});
+</script>
+</body>
+</html>
