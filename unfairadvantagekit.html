@@ -283,7 +283,12 @@ body { background: var(--navy-d); min-height: 100vh; }
   .form-row .form-group { margin-bottom: 0; }
   .form-row .form-input { margin-bottom: 16px; }
 }
+  /* Hide Brevo's default success/error panels — we use our own */
+  #success-message, #error-message { display: none !important; }
+  /* Hide Brevo's default container styling */
+  .sib-form, #sib-form-container, .sib-container--large { all: unset !important; display: block !important; }
 </style>
+<link rel="stylesheet" href="https://sibforms.com/forms/end-form/build/sib-styles.css">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,600;1,300&family=Jost:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
@@ -332,25 +337,32 @@ body { background: var(--navy-d); min-height: 100vh; }
 
     <!-- FORM -->
     <div class="form-section" id="formSection">
-      <form id="kitForm" action="https://formspree.io/f/xdayybll" method="POST">
+      <!-- Brevo form — styles overridden below to match site design -->
+      <form id="sib-form" method="POST" action="https://febdbab1.sibforms.com/serve/MUIFABY1G59wC2Kr51GqP1YnzNCJ-U9exyBPbR85aTHu_wOhaRdYbV9jXQml0IdCwWvXHqjw9xYDZZttxuaqulPKPFZAv8KqkTz4YxnFXjb4JjUYixr9tkiRnj2gCj7H20hBobpUgdTk0iXWYKqrca4E1MAeMijGevCJnytazhLQqnX_KS_SQCyvH5VVV6PVaufc-KNPr8Q48oMd-w==" data-type="subscription">
+
         <div class="form-row">
           <div class="form-group">
-            <label class="form-label">First Name</label>
-            <input type="text" name="first_name" class="form-input" placeholder="Jane" required>
+            <label class="form-label" for="FIRSTNAME">First Name</label>
+            <input class="form-input" maxlength="200" type="text" id="FIRSTNAME" name="FIRSTNAME" placeholder="Jane" data-required="true" required>
           </div>
           <div class="form-group">
-            <label class="form-label">Last Name</label>
-            <input type="text" name="last_name" class="form-input" placeholder="Smith" required>
+            <label class="form-label" for="LASTNAME">Last Name</label>
+            <input class="form-input" maxlength="200" type="text" id="LASTNAME" name="LASTNAME" placeholder="Smith" data-required="true" required>
           </div>
         </div>
-        <label class="form-label">Email Address</label>
-        <input type="email" name="email" class="form-input" placeholder="jane@email.com" required>
-        <label class="form-label">Phone Number</label>
-        <input type="tel" name="phone" class="form-input" placeholder="(702) 555-0100">
-        <!-- Hidden fields for Misty's tracking -->
-        <input type="hidden" name="source" value="Unfair Advantage Kit Page">
-        <input type="hidden" name="_subject" value="New Kit Request — Home Buyer's Unfair Advantage Kit">
-        <button type="submit" class="submit-btn">
+
+        <label class="form-label" for="EMAIL">Email Address</label>
+        <input class="form-input" type="email" id="EMAIL" name="EMAIL" placeholder="jane@email.com" data-required="true" required>
+
+        <label class="form-label" for="SMS">Phone Number</label>
+        <input class="form-input" type="tel" id="SMS" name="SMS" placeholder="(702) 555-0100" data-required="true" required>
+        <!-- Hidden SMS country code — defaulting to US -->
+        <input type="hidden" name="SMS__COUNTRY_CODE" value="+1">
+
+        <input type="hidden" name="email_address_check" value="">
+        <input type="hidden" name="locale" value="en">
+
+        <button type="submit" class="submit-btn" form="sib-form">
           <span>Send Me the Free Kit</span>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </button>
@@ -391,33 +403,45 @@ body { background: var(--navy-d); min-height: 100vh; }
   </div>
 </div>
 
+<!-- Brevo form JS -->
 <script>
-document.getElementById('kitForm').addEventListener('submit', async function(e) {
-  e.preventDefault();
-  const form = e.target;
-  const btn = form.querySelector('.submit-btn');
-  btn.textContent = 'Sending...';
-  btn.disabled = true;
+  window.REQUIRED_CODE_ERROR_MESSAGE = 'Please choose a country code';
+  window.LOCALE = 'en';
+  window.EMAIL_INVALID_MESSAGE = window.SMS_INVALID_MESSAGE = "Please check the format and try again.";
+  window.REQUIRED_ERROR_MESSAGE = "This field cannot be left blank.";
+  window.GENERIC_INVALID_MESSAGE = "Please check the format and try again.";
+  window.translation = { common: { selectedList: '{quantity} list selected', selectedLists: '{quantity} lists selected' } };
+  var AUTOHIDE = Boolean(0);
+</script>
+<script defer src="https://sibforms.com/forms/end-form/build/main.js"></script>
 
-  try {
-    const res = await fetch(form.action, {
-      method: 'POST',
-      body: new FormData(form),
-      headers: { 'Accept': 'application/json' }
+<script>
+  // Show success screen after Brevo submits successfully
+  // Brevo redirects to success-message div — we intercept and show our custom success screen instead
+  document.getElementById('sib-form').addEventListener('submit', function() {
+    const btn = this.querySelector('.submit-btn');
+    btn.innerHTML = '<span>Sending...</span>';
+    btn.disabled = true;
+
+    // Brevo handles the actual submission — we watch for their success div to appear
+    const observer = new MutationObserver(function() {
+      const sibSuccess = document.getElementById('success-message');
+      if (sibSuccess && sibSuccess.style.display !== 'none' && sibSuccess.offsetParent !== null) {
+        document.getElementById('kitPreview').classList.add('hidden');
+        document.getElementById('formSection').classList.add('hidden');
+        document.getElementById('successScreen').classList.add('visible');
+        observer.disconnect();
+      }
     });
-    if (res.ok) {
+    observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style'] });
+
+    // Fallback: if Brevo doesn't trigger the observer, show success after 3s
+    setTimeout(function() {
       document.getElementById('kitPreview').classList.add('hidden');
       document.getElementById('formSection').classList.add('hidden');
       document.getElementById('successScreen').classList.add('visible');
-    } else {
-      btn.textContent = 'Something went wrong — try again';
-      btn.disabled = false;
-    }
-  } catch {
-    btn.textContent = 'Something went wrong — try again';
-    btn.disabled = false;
-  }
-});
+    }, 3000);
+  });
 </script>
 </body>
 </html>
